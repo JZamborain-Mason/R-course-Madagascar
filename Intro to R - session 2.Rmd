@@ -15,275 +15,240 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Vectorizing
-Vectorizing is when we use vector operations to perform simulations, instead of populating a matrix. This makes the simulation much faster, which is important when you are running a sensitivity analysis over a complicated model. For this we use vector operations from session 1. Lets review some important vector operations and vectorize our simple population growth model over many growth rates:
+In this session, we will learn how to manipulate and visualize data using the dplyr and ggplot packages
+
+##Install packages
+First, we need to intall the tidyverse package, which contains a siut of packages that makes data wrangling and visualization a lot easier!
 
 ```{r}
-#Create a vector  of a sequence from 1 to 5
-x=1:5
-x
-#Create a vector  of a sequence from 6 to 10
-y=6:10
-y
-#Multiply two vectors
+#Install the package. You can use the function below (install.packages) to install any package. Alternativelly, if you are using R studio, you can go to Tools>Install Packages and just selct the package you which to install
+install.packages(tidyverse)
 
-z = x*y
-z #This will do the following: 1*6, 2*7....
-
-
-#Divide two vectors
-z = x/y
-z #This will do the following: 1/6, 2/7....
-
-
-#Sum two vectors
-z= x + y
-z #This will do the following: 1+6, 2+7....
-
-#Another important vector operation is to multiply a vector by one value. This operation multiplies all elements of the vector by one value.
-z= x*2
-z #This will do the following: 1*2, 2*2, 3*2....
+#Next, you need to upload the package to the library to make all functions available to use
+library(tidyverse)
 ```
 
-Now instead of using a nested loop, lets vectorize our example from Session 1
-```{r}
-#First we create a vector to store the parameter values (in this case the growth rate)
-growth = seq(0.1, 1, by=0.1)
+##Download data
 
-#Let simulate over 20 years 
-t=20
-
-#Then create a vector to store our populations
-pop = rep(0, length(growth))
-
-#Set initial population size (10)
-pop[]=10
-
-#Create a plot to demonstrate our population szies for each growth rate. We first need to plot our initial population sizes by each growth rate. Note that we need to know up front what will be the maximum population size for the years we simulate. This is easier when you set a carrying capacity for our population, which we can then set the ylim to K.
-plot(pop~growth, type="l", ylab="population size", xlab="growth rate", ylim=c(0, 6000000))
-
-#Loop over the number of years we wish to simulate (t)
-for(n in 2:t){
-  
-  #Lets first calculate how much our population will grow every time step 
-  surplus = pop*growth
-  
-  #Now lets update our population every time step. This command will overwrite our vector of population sizes every time step. We will end up with a vector of population size at time t
-  pop = pop + surplus
-  
-  #lets add a line to our plot of pop size at every time step to demonstrate the pop size vectors. The actual values should be the same as the matrix we constructed in session 1. In this plot, the first line will be our initial pop size (10) for all growth rate values, the second line will be our population at t=2, and so on.
-  lines(pop~growth)
-}
-
-```
-
-Note that we cannot graph population size over time as we did in session 1 because we only have a vector of the resulting pop size in year t. To do that we would have to create a matrix using the rbind function or construct a plot inside the loop. For example:
-```{r}
-#First we create a vector to store the parameter values (in this case the growth rate)
-growth = seq(0.1, 1, by=0.1)
-
-#Let simulate over 20 years 
-t=20
-
-#Then create a vector to store our populations
-pop = rep(0, length(growth))
-
-#Set initial population size (10)
-pop[]=10
-
-#Create a vector to store our population sizes
-out = pop
-
-#Create a plot for our population sizes in every time setp. Note that we need to create a vector with the same length of pop
-plot(rep(1, length(pop)), pop, type="l", ylab="population size", xlab="Years", ylim=c(0, 6000000), xlim=c(1, t))
-
-#Loop over the number of years (rows) and growth rates (columns)
-for(n in 2:t){
-  
-  #Lets first calculate how much our population will grow every time step 
-  surplus = pop*growth
-  
-  #Now lets update our population every time step. This command will overwrite our vector of population sizes every time step. We will end up with a vector of population size at t=20
-  pop = pop + surplus
-  
-  #Now we can add points to our plot for every time step
-  points(rep(n, length(pop)), pop)
-  
-  #Alternatively, we can construct a matrix to store our population sizes from our vector out. This will add a line to out every time step of our loop.
-  out = rbind(out, pop)
-}
-
-matplot(out, type="l", ylab="Population size", xlab="Years")
-```
-
-
-#Writing your own functions
-Functions are critical to modeling in R. By turning your model code (like the population model we did in session 1) into a function, it allows you to easily modify and test parameters, perform optimization and make your programming more efficient and clean. Like every other function in R, each function you create is an independent little program, performing a few related tasks and returning the results. This makes complex problems easier to program, and makes it easier to see the logical flow of a large program. 
-
-Suppose you want a function mypop to simulate a population growth model. You first need to specify the name of the function you wish to create (in this case mypop), and then use the function() command to create your function. Inside the parenthesis you will put the parameters of the model. In cases where you want a specific result (or results) from your function, you need the return() function in the end of your scrip to create mypop. The basic syntax is then:
-
-mypop = function(parameters){  
-  commands  
-return()  
-}
-
-The parameters specified in the function can be values or more complex objects, such as vectors or matrices. Similarly, we can set our function to return any one or combination of values or objects.  
-
-Lets go through an example. Lets simulate the same population growth model from Session 1, but now within a function:
+First, lets download a database that we can work with. We will use a database from the world bank that estimates the prevalence of child malnutrition in the world. This data provides an estimate of the proportion of children under-five whose weight for age is less than minus two standard deviations from the median for the international reference population ages 0 to 59 months.
 
 ```{r}
-#First we need to create our function, spcifying the parameters of our model. In this case our model has three parameters: g represents the population growth, N0 represents the initial population size, and t represents the number of years we wish to simulate
+#First, lets download the WDI (World development Indicators) package
+install.packages(WDI)
+library(WDI)
 
-mypop = function(g, t, N0){
+#Dowload the data we want. Lets name the database "dat"
+dat = WDI(country = "all", indicator = c("malnut" = "5.51.01.02.malnut"), start=2005, end=2011, extra=TRUE, cache=NULL)
+
+#Now lets inspect the data
+names(df)
+head(df)
+str(df)
+
+#As we can see, this is a data frame containing 1078 observations and 11 variables, where "malnut" is the main variable that we are interested in.
+```
+
+#Tidy data
+
+To work with tidyverse packages, we need to use a data frame in the long (tidy) format, where we put variables in the columns and observations in the rows. Many databases will be in the wide format, so it is important to make sure that you are working with a dataset in the long format. 
+
+![](img/tidy_data.png)
+
+An examples of wide format data is:
+
+```{r}
+##      ozone      wind     temp
+## 1 23.61538 11.622581 65.54839
+## 2 29.44444 10.266667 79.10000
+## 3 59.11538  8.941935 83.90323
+## 4 59.96154  8.793548 83.96774
+```
+
+The same data in the long format would be:
+
+```{r}
+##    variable     value
+## 1     ozone 23.615385
+## 2     ozone 29.444444
+## 3     ozone 59.115385
+## 4     ozone 59.961538
+## 5      wind 11.622581
+## 6      wind 10.266667
+## 7      wind  8.941935
+## 8      wind  8.793548
+## 9      temp 65.548387
+## 10     temp 79.100000
+## 11     temp 83.903226
+## 12     temp 83.967742
+```
+
+There are many ways to transform databases from wide to long and long to wide formats. You can use the dplyr package functions gather() for transforming from wide to long and spread() to transform from long to wide. Another option (which I find easier) is to use the reshape2 package functions melt() and dcast().
+
+Since our data is already in the long (tidy) format, we will move on. But see the supplemental material if you would like to explore this further.
+
+##Dplyr basic data wrangling functions
+
+There are six main functions the we can use to do the majority of data manipulations:
+
+- **`filter()`**: pick observations by their values
+    
+- **`select()`**: pick variables by their names
+    
+- **`mutate()`**: create new variables with functions of existing variables 
+
+- **`group_by()`**: changes the scope of each function from operating on the entire dataset to operating on it group-by-group
+    
+- **`summarise()`**: collapse many values down to a single summary 
   
-#Create a vector (pop) of zeros and size t 
-pop = rep(0, t)
+- **`arrange()`**: reorder the rows
 
-#Set the initial population size
-pop[1]=N0
+The first argument of any function is the data frame and the subsequent arguments describe what to do with the data frame.
 
-#calculate population size at times 2 through 10, increasing by g every year
-for(n in 2:length(pop)){
-  pop[n]=g*pop[n-1]
-}
+#Filter
 
-#Set the the returning object. In this case is going to be a vector of pop
-return(pop)
-}
+This function allows you to subset your data for specific countries, years, etc.
 
-#To use this function you now need to specify the parameter values and name your results
-res = mypop(g=1.2, t=10, N0=10)
-
-#plot pop - note that is the same plot we creates in session 1
-plot(res, type="l", ylab="Population Size", xlab="Years")
-
-```
-
-Now that we created our function, it is really easy for us to test different parameter values
-For example, now we want to test a different growth rate:
+First, lets filter only data from Madagascar:
 ```{r}
-#Set g=0.5
-res = mypop(g=0.5, t=10, N0=10)
+filter(dat, country %in% "Madagascar")
 
-#plot pop - note that now our population is decreasing
-plot(res, type="l", ylab="Population Size", xlab="Years")
+#now we could take the mean Malnutrition proportion from 2005 to 2011
+x = filter(dat, country %in% "Madagascar")
+mean(x$malnut)
 ```
 
-We can also change the number of years we wish to simulate (t=50):
-```{r}
-#Set t=50
-res = mypop(g=1.2, t=50, N0=10)
-
-#plot pop - note that now our population is decreasing
-plot(res, type="l", ylab="Population Size", xlab="Years")
-```
-
-We can now easily create a matrix of our population sizes for different parameter values
-```{r}
-#First, we need to create a vector of the growth rates we wish to simulate
-growth = seq(1.1, 2, by=0.1)
-t=10
-#Create a mtrix to store the values
-g.pop = matrix(0, t, length(growth))
-
-#now we run a for loop through all our population growth rates
-for(i in 1:length(growth)){
-  res = mypop(g = growth[i], t=10, N0=10)
-  g.pop[,i]=res
-}
-#In this loop, we first create a variable res to store our population for all growth rates. When i=1 res will be the vector of population size with a groth rate of growth[1] (which in this case is 1.1). Then we will store that vector in gpop. For i=2, res will be the vector of population size with a groth rate of growth[2] (which in this case is 1.2). Then we will bind this new vector with the previous one to form a matrix. This opreation will repeat for all values of growth. The result will be a matrix called g.plot with t rows and g columns.
-matplot(g.pop, type="l", ylab="Population size", xlab="Years")
-```
-
-Another way of doing the same graph is to use the cbind function. 
-```{r}
-#First, we need to create a vector of the growth rates we wish to simulate
-growth = seq(1.1, 2, by=0.1)
-
-#now we run a for loop through all our population growth rates
-for(i in 1:length(growth)){
-  res = mypop(g = growth[i], t=10, N0=10)
-  if(i==1){g.pop = res}else(g.pop=cbind(g.pop, res)) 
-}
-#In this loop, we first create a variable res to store our population for all growth rates. When i=1 res will be the vector of population size with a groth rate of growth[1] (which in this case is 1.1). Then we will store that vector in gpop. For i=2, res will be the vector of population size with a groth rate of growth[2] (which in this case is 1.2). Then we will bind this new vector with the previous one to form a matrix. This opreation will repeat for all values of growth. The result will be a matrix called g.plot with t rows and g columns.
-matplot(g.pop, type="l", ylab="Population size", xlab="Years")
-```
-
-However, using the cbind function might be hard to keep track of the actual parameter in each column. To help you keep track it might be useful to use the rbind function instead, where you have a column to insert the actual parameter values. To test this, lets modify our function to return only the population size in the last year (t) and the parameters we are using. 
+Lets filter data only from Madagascar and Mozambique. For this we will have to use the `%in%` operator:
 
 ```{r}
-#First lets redifine our function to return pop[50], g and t
-mypop.eq = function(g, t, N0){
-  
-#Create a vector (pop) of zeros and size t 
-pop = rep(0, t)
-
-#Set the initial population size
-pop[1]=N0
-
-#calculate population size at times 2 through 10, increasing by g every year
-for(n in 2:length(pop)){
-  pop[n]=g*pop[n-1]
-}
-
-#Set the the returning object. In this case is going to be a vector of pop[t], g and t
-return(c(pop[t], g, t, N0))
-}
-
-#Now lets test how growth rate will affect our final population size
-#First, we need to create a vector of the growth rates we wish to simulate
-growth = seq(1.1, 2, by=0.1)
-
-#now we run a for loop through all our population growth rates
-for(i in 1:length(growth)){
-  res = mypop.eq(g = growth[i], t=10, N0=10)
-  if(i==1){g.pop2 = res}else(g.pop2=rbind(g.pop2, res)) 
-}
-#name the columns
-colnames(g.pop2)=c("pop", "g", "t", "N0")
-#In this case, in the first time step we are creating a vector of pop[50], g and t for growth[1]. In the second time step (i=2), we will create a matrix where the second row will be the values for growth[2]. The loop will keep adding rows to this matrix for all growth values. This can be a useful method when you are running a sensitivity analysis on a number of parameters.  
-
-plot(g.pop2[,"pop"]~g.pop2[,"g"], ylab="Population size", xlab="Growth rate")
+filter(dat, country %in% c("Madagascar", "Mozambique"))
 ```
 
-#Manipulate function
+Now, lets filter for Madagascar and for values greater than 0.8
 
-This function can be very useful to explore parameter values. As you change your parameters the graph updates automatically.
 ```{r}
-#require(manipulate)  #need this package
-
-#Lets rewrite our function to have the plot inside it. For this we dont need to return any value, just the actual plot. 
-mypop = function(g, t, N0){
-  
-#Create a vector (pop) of zeros and size t 
-pop = rep(0, t)
-
-#Set the initial population size
-pop[1]=N0
-
-#calculate population size at times 2 through 10, increasing by g every year
-for(n in 2:length(pop)){
-  pop[n]=g*pop[n-1]
-}
-#Plot our population size
-plot(pop, type="l", ylab="Population Size", xlab="Years")
-}
-#
-#You need to run this function on R console. It doenst seem to work in R markdown.
-#manipulate(mypop(g, t, N0), 
-#           g = slider(min=0,max=2,initial=1.2,step=0.1), 
-#           t = slider(min=1,max=100,initial=10,step=1),
-#           N0 = slider(min=1,max=50,initial=10,step=1),
-#           add.curve = checkbox(TRUE, "Add curve"),
-#           add.lines = checkbox(TRUE, "Add lines"))
+filter(dat, country == "Madagascar", malnut>0.8)
 ```
 
-#Autoloading functions at startup
-If you’ve written some functions that you would like to have available every time you use R , there’s a mechanism for having them load automatically at startup. All you need to do is write a script file with your function (or many functions) and save it in the folder Rstudio is connected. Then just add this function to the begging of your script. For example, if you saved your script in the "c:/src/R" location, and named your function "myfunction" you just use the command: 
+#Select
 
-source("c:/src/R/myfunction.R")
+This funciton allows you to subset the data on variables or columns.
 
-Autoloading your functions can be useful when you want to run several functions in one script. This will make your script shorter and cleaner.
+```{r}
+#Lets subset the data so that it shows only columns iso3c, year and malnut
+x = select(dat, iso3c, year, malnut)
+head(x)
+#See that our dataset has now only 3 variables
+```
+```{r}
+#Now, lets remove longitude and latitude (we might not be interested in those columns)
+x = select(dat, -longitude, -latitude)
+head(x)
+#See now that we have 9 columns (instead of 11)
+```
+
+#Using the pipe `%>%` operator
+
+This new syntax leads to code that is much easier to write and to read. You can think "and then" whenever you see the pipe operator, `%>%`
+The RStudio keyboard shortcut: Ctrl + Shift + M (Windows), Cmd + Shift + M (Mac).
+
+```{r}
+#Lets do the same example as above. Now instead of including the data frame inside the function, we will use the pipe operator:
+
+#Instead of doing this:
+x = filter(dat, country == "Madagascar", malnut>0.8)
+
+#You can now do this:
+x = dat %>% 
+  filter(country == "Madagascar", 
+         malnut>0.8)
+head(x)
+```
+
+Now, you can combine two different functions:
+
+```{r}
+dat %>% 
+  filter(country == "Madagascar") %>% 
+  select(iso3c, year, malnut)
+##This is an important, since most manipulations will have more than one operations. 
+#You can read this as: "from the data frame "dat", filter for Madagascar and then select variables iso3c, year and malnut"
+```
+
+#Mutate
+
+Now lets say we want to add a new column to our data frame. This function allows you to change existing variables or create new ones.
+
+```{r}
+#Lets say we want a column that is the percentage of child malnutrition instead of proportions. To do that, we need to multiply the malnut variable by 100. Let call this new variable perc_malnut
+
+dat %>%
+  mutate(perc_malnut = malnut*100) %>% 
+  filter(country == "Madagascar")
+#Now we have one more column that is perc_malnut
+```
+
+#Group by and summarise
+What if we wanted to know the average "malnut" value per year for all countries? Answering this question requires a grouping variable.
+
+By using `group_by()` we can set our grouping variable to year and create a new column called `mean_malnut` that will calculate the mean malnut value for each year accross all countries in our dataset.
+
+The function `summarize()` will only keep the columns that are grouped_by or summarized. You can also use this to sum accross rows by using `sum()` instead of `mean()`
+
+```{r}
+dat %>%
+  group_by(year) %>% 
+  summarise(mean_malnut = mean(malnut, na.rm = T)) #you need to include na.rm = TRUE when you have NA's in the data.
+
+#Now we can see the world average child malnutrition estimates per year!
+```
+
+We can also group by more than one variable. Lets say we want to know thw average malnut value per year by income level.
+
+```{r}
+dat %>%
+  group_by(year, income) %>% 
+  summarise(mean_malnut = mean(malnut, na.rm = T)) #you need to include na.rm = TRUE when you have NA's in the data.
+
+#Now we can see the world average child malnutrition estimates per year!
+```
+
+
+
+#Arrange
+
+This funciton allows you to arrange the data according to any specific variable. For example, you might want to arrange the output from the previous example by the mean_malnut value, instead of years.
+
+```{r}
+dat %>%
+  group_by(year) %>% 
+  summarise(mean_malnut = mean(malnut, na.rm = T)) %>% 
+  arrange(mean_malnut)
+```
+
+You can also arrange the data in descending order:
+
+```{r}
+dat %>%
+  group_by(year) %>% 
+  summarise(mean_malnut = mean(malnut, na.rm = T)) %>% 
+  arrange(desc(mean_malnut))
+```
+
+Lets now use all functions together!
+
+Your turn: lets say we want to know the average malnut value (in percentage) in Sub-Saharan Africa countries from 2005 to 2011 in ascending order.
+
+```{r}
+dat %>%
+  filter(region == "Sub-Saharan Africa") %>% 
+  mutate(perc_malnut = 100*malnut) %>% 
+  group_by(year) %>% 
+  summarise(mean_malnut = mean(perc_malnut, na.rm = T)) %>% 
+  arrange(mean_malnut)
+```
+
+
+
 
 #Exercise 3
 

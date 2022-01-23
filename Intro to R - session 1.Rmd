@@ -1,7 +1,7 @@
 ---
 title: "Intro to modeling in R - Session 1"
-author: "Daniel Viana"
-date: "January 25, 2018"
+author: "Daniel Viana and Jessica Zamborain-Mason"
+date: "January 23, 2022"
 output:
   word_document:
     toc: yes
@@ -14,11 +14,39 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Welcome!
+# Bootcamp overview
+ 
+Welcome to the R bootcamp for "ARMS to reefs: A new tool to restore coral reef biodiversity, fisheries yields, and human health in Madagascar".
+During this bootcamp we will introduce you to R and RStudio, show you how to imput and wrangle data, and introduce you to the analysis and visualization of biodiversity, catch and quantitative social data. 
 
-# Installing R and R Studio on your computer
+This course assumes that you have never done any computer programming before, so we will start from the beginning. 
 
-# Starting R Studio
+The first two days are introductory courses so you get to know how to work with R and RStudio. At times, you might find this to be frustrating and tedious. We acknowledge inmersing yourselves into computer programming can be a steep learning curve (we have been there...), but believe us when we say it is totally worth it! We are here to help you navigate this process. 
+
+The third day we will introduce you to biodiversity metrics......... (Thomas to fill in)
+
+The fourth day, using real catch statistics from Madagascar,  we will work on...... (Daniel to fill in)
+
+Finally, the last day of the course, we will use real household surveys from X to .....(Jessica to fill in)
+
+Are you ready? Let's get started!
+
+
+# Installing R and RStudio on your computer
+
+Let's start by downloading R and RStudio on your computers. 
+
+R is an open-source project, and available for free download via the web. 
+First, go to https://cran.r-project.org/ and click on the version of R that is suitable for your computer (e.g., Windows or Mac). 
+If you pressed on the Mac link, press on the first link that appears after "Latest release:" (e.g., R-4.1.2.pkg). 
+If you pressed on the Windows link, press the link names "base" just under "Subdirectories:". In the next page, press on the link to download the latest version fo R (e.g., Download R 4.1.2 for Windows). 
+R will start downloading on to your computer.  Once it has finished downloading, open it and go through the installation process (.exe file in Windows). follow the default for your system type. For some, it will make you choose between 32 and 64-bit, which refers to the way a computer processor handles information.You can access your computer's system type by searching for "System imformation" in your windows search icon. 
+
+To download RStudio, go to https://www.rstudio.com/products/rstudio/download/. Click the download button under the RStudio Desktop Open Source License (Free). Then, under "All installers", choose the link that matches your computer (e.g., Windows or Mac). RStudio will download to your computer. Open it and go through the installation process (.exe file for Windows). 
+
+Congratulations! You know have R and RStudio downloaded on your computer. Now, we can start programming and modelling
+
+# Starting RStudio
 
 # Interactive calculations
 

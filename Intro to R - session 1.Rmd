@@ -14,7 +14,13 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Welcome!
 
+# Installing R and R Studio on your computer
+
+# Starting R Studio
+
+# Interactive calculations
 
 # Vectors
 

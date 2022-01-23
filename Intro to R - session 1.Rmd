@@ -36,17 +36,21 @@ Are you ready? Let's get started!
 
 Let's start by downloading R and RStudio on your computers. 
 
-R is an open-source project, and available for free download via the web. 
+Throughout this course we will use R through RStudio.
+
+R is an open-source project of programming language, that is easily available for free download via the web. 
 First, go to https://cran.r-project.org/ and click on the version of R that is suitable for your computer (e.g., Windows or Mac). 
 If you pressed on the Mac link, press on the first link that appears after "Latest release:" (e.g., R-4.1.2.pkg). 
 If you pressed on the Windows link, press the link names "base" just under "Subdirectories:". In the next page, press on the link to download the latest version fo R (e.g., Download R 4.1.2 for Windows). 
 R will start downloading on to your computer.  Once it has finished downloading, open it and go through the installation process (.exe file in Windows). follow the default for your system type. For some, it will make you choose between 32 and 64-bit, which refers to the way a computer processor handles information.You can access your computer's system type by searching for "System imformation" in your windows search icon. 
 
-To download RStudio, go to https://www.rstudio.com/products/rstudio/download/. Click the download button under the RStudio Desktop Open Source License (Free). Then, under "All installers", choose the link that matches your computer (e.g., Windows or Mac). RStudio will download to your computer. Open it and go through the installation process (.exe file for Windows). 
+RStudio is an integrated development environment that uses R (some classify it as a more "user friendly" way of using R). It is also easily available for free download via the web.  To download RStudio, go to https://www.rstudio.com/products/rstudio/download/. Click the download button under the RStudio Desktop Open Source License (Free). Then, under "All installers", choose the link that matches your computer (e.g., Windows or Mac). RStudio will download to your computer. Open it and go through the installation process (.exe file for Windows). 
 
-Congratulations! You know have R and RStudio downloaded on your computer. Now, we can start programming and modelling
+Congratulations! You now have R and RStudio downloaded on your computer. Now, we can start programming!
 
 # Starting RStudio
+
+
 
 # Interactive calculations
 

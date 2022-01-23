@@ -23,7 +23,7 @@ This course assumes that you have never done any computer programming before, so
 
 The first two days are introductory courses so you get to know how to work with R and RStudio. At times, you might find this to be frustrating and tedious. We acknowledge inmersing yourselves into computer programming can be a steep learning curve (we have been there...), but believe us when we say it is totally worth it! We are here to help you navigate this process. 
 
-The third day we will introduce you to biodiversity metrics......... (Thomas to fill in)
+The third day we will introduce you to biodiversity metrics......... (Thomas to fill in?)
 
 The fourth day, using real catch statistics from Madagascar,  we will work on...... (Daniel to fill in)
 
@@ -53,7 +53,7 @@ Congratulations! You now have R and RStudio installed on your computer. Now, we 
 # Starting RStudio
 
 Before opening RStudio, let's look briefly at R itself. 
-First, search for R within the applications of your computer (e.g., an R icon on your desktop). Click on it and R will open. 
+Search for R within the applications of your computer (probably an R icon on your desktop). Click on it and R will open. 
 
 
 

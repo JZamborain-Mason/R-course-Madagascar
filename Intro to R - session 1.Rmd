@@ -74,7 +74,7 @@ Similar to how we opened R, now we open RStudio (click the RStudio icon on your 
 On the left side, you may find something familar. That is right, it is the console window, just like the one we saw in R.
 
 However, in contrast to R, in RStudio you have other panels. 
-On the bottom right, you will likely see some files. This is your working directory (where files related to the project will be or will be stored).
+On the bottom right, you will likely see some files. This is your working directory (where files related to the project are or will be stored).
 To check your working directory, go to the command window and type:
 ```{r}
 getwd()
@@ -98,7 +98,7 @@ By default, a variable created this way is a vector (in this case of length 1), 
 ```{r}
 class(x)
 ```
-This tell you x is a numeric variable. You could instead create a character string. For example:
+This tells you x is a numeric variable. You could instead create a character string. For example:
 ```{r}
 x1="a"
 class(x1)
@@ -122,7 +122,7 @@ Note that
 - Calculations are done with variables as if they were numbers. R uses + for assition, - for substraction, * for multiplication, / for division, and ^ for exponentiation. For example:
 ```{r}
 y=4*10
-z=y/x
+w=y/x
 ```
 
 R also has many built-in mathematical functions that operate on variables. For example log() calculates the natural logarithm, and sqrt() is used to calculate the square-root:
@@ -138,7 +138,7 @@ You can get help on any R function by entering ?_functionname_ or help(_function
 help(log)
 ```
 
-You can also remove variables by suing the function rm(). For example, if we wanted to delete the variable "x" from our environment, we would type:
+You can also remove variables by using the function rm(). For example, if we wanted to delete the variable "x" from our environment, we would type:
 ```{r}
 rm(x)
 ```
@@ -167,7 +167,7 @@ x1="a"
 class(x1)
 z=3+5
 y=4*10
-z=y/x
+w=y/x
 z1=sqrt(x)
 z2=log(y)
 ?sqrt
@@ -191,7 +191,43 @@ Now type "# This is a comment" and press Enter:
 ```
 R ignores you, and gives you a new prompt. 
 
-Now go ahead and comment your script accordingly. 
+Now go ahead and comment your script accordingly. For example:
+```{r}
+# Get working directory
+getwd()
+# Create a variable x
+x=2+2
+# print x
+x
+# Create a variable x
+x<-2+2
+# print x
+print(x)
+# Output class of variable x (numeric)
+class(x)
+# Create a variable x1
+x1="a"
+# Output class of variable x1 (character)
+class(x1)
+# Create a variable z
+z=3+5
+# Create a variable y
+y=4*10
+# Create a variable w
+w=y/x
+# Create a variable z1 which is the square-root of x
+z1=sqrt(x)
+# Create a variable y which is the natural logarithm of y
+z2=log(y)
+# Obtain help about the  square-root function
+?sqrt
+help(log)
+# Remove the variable x
+rm(x)
+#Show x is no longer in the environment
+x
+```
+
 
 
 # Vectors

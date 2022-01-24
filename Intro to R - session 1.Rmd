@@ -175,12 +175,12 @@ help(log)
 rm(x)
 x
 ```
-You can select it all and click on the button that says "Run" this will run all the selected sections and show the outputs in your Console window. 
+You can select it all and click on the button that says "Run". This will run all the selected sections and show the outputs in your Console window. 
 Save your script to your working directory by clicking on the "Save" icon. Remember to assign a descriptive name to your Script such as "Rintro_file1".
 Remember that these scripts need to be in the working directory, or R won’t see them.
 
 When writing in a computer language, it is often a good idea to write clarifying comments in plain language, to remind yourself why you did what you did, or to make a note for someone who is looking over your R code. To do this, though, you need to use a special character to say to R “Ignore this, this is information for someone else”
-You do this with the "#" character. Try it. Go to the command linein your Console, and type a comment without the #. For example, write "This is a comment" and press Enter:
+You do this with the "#" character. Try it. Go to the command line in your Console, and type a comment without the #. For example, write "This is a comment" and press Enter:
 ```{r}
 This is a comment
 ```
@@ -190,6 +190,7 @@ Now type "# This is a comment" and press Enter:
 #This is a comment
 ```
 R ignores you, and gives you a new prompt. 
+
 Now go ahead and comment your script accordingly. 
 
 

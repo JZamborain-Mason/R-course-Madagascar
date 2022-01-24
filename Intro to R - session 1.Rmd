@@ -27,7 +27,7 @@ The third day we will introduce you to biodiversity metrics......... (Thomas to 
 
 The fourth day, using real catch statistics from Madagascar,  we will work on...... (Daniel to fill in)
 
-Finally, the last day of the course, we will use real household surveys from X to .....(Jessica to fill in)
+Finally, the last day of the course, we will use real household surveys from X to .....(me to fill in)
 
 Are you ready? Let's get started!
 
@@ -50,14 +50,148 @@ RStudio will download to your computer. Open it and go through the installation 
 
 Congratulations! You now have R and RStudio installed on your computer. Now, we can start programming!
 
-# Starting RStudio
+
+# Starting RStudio and performing interactive calculations
 
 Before opening RStudio, let's look briefly at R itself. 
 Search for R within the applications of your computer (probably an R icon on your desktop). Click on it and R will open. 
+When R is launched it opens the console window automatically. This has a few basic menus at the top, which you can check out later on your own.
+The console window is also where you enter commands (where the arrow is ">") for R to execute interactively, meaning that the command is executed and the result is displayed as soon as you hit the Enter key on your keyboard. For example, type:
 
+```{r}
+2+2
+```
+an press enter, R will return the value of 4. R "heard" you, understood what you wanted when you said “2+2”, carried out the addition, and told you the answer.
 
+Let's move on to RStudio. To do so, first we will close R. We do this by typing:
 
-# Interactive calculations
+```{r}
+q()
+```
+When you quit R, it will ask you if you want to save the workspace (that is, all of the variables you have defned in this session); for now (and in general), say "no" in order to avoid clutter.
+
+Similar to how we opened R, now we open RStudio (click the RStudio icon on your desktop or search for RStudio in your aplications). 
+On the left side, you may find something familar. That is right, it is the console window, just like the one we saw in R.
+
+However, in contrast to R, in RStudio you have other panels. 
+On the bottom right, you will likely see some files. This is your working directory (where files related to the project will be or will be stored).
+To check your working directory, go to the command window and type:
+```{r}
+getwd()
+```
+This tells you what RStudios’s working directory is. Any outputs you generate should appear in this directory.
+
+On the top right you have the environment. This is where you will see the data objects you create. Currently it is empty because we have not created any objects. Let's create one. In the console window, create a variable x that is equal to 2+2 and press Enter: 
+```{r}
+x=2+2
+```
+You will see that now your environment has one object called x that has a value of 4. R has stored this variable in your environment, and knows what x is (the result of 4). So if in your console window you type "x" and press Enter, R returns its value:
+```{r}
+x
+```
+Equivalently, you can use "<-" instead of "=" to assign variables, and you can also use print() to show what your variables are. For example, the two commands above can be replaced by: 
+```{r}
+x<-2+2
+print(x)
+```
+By default, a variable created this way is a vector (in this case of length 1), and it is numeric because we gave R a number. You can see what class of object you have by using the function class():
+```{r}
+class(x)
+```
+This tell you x is a numeric variable. You could instead create a character string. For example:
+```{r}
+x1="a"
+class(x1)
+```
+Now we have a new object called "x1" that has the character "a" stored. 
+
+R can tell if you haven't finished a command and will give you a continuation prompt (+) to let you know you havent finished. For example, type z=3+ and press Enter:
+```{r}
+z=3+
+```
+The prompt "+" appears, detailing that R is missing some information to finish assigning your variable. For example:
+```{r}
+5
+```
+Now R has understood that it has a variable z which has the value of 8. This usually happens if for example we miss a parenthesis. 
+
+Note that 
+- variable names in R must begin with a letter, followed by alphanumeric characters.
+- R is case sensitive (x and X are not the same variable).
+- it helps to use descriptive variable names, such as CPUE for catch per unit effort instead of "x" or "y". 
+- Calculations are done with variables as if they were numbers. R uses + for assition, - for substraction, * for multiplication, / for division, and ^ for exponentiation. For example:
+```{r}
+y=4*10
+z=y/x
+```
+
+R also has many built-in mathematical functions that operate on variables. For example log() calculates the natural logarithm, and sqrt() is used to calculate the square-root:
+```{r}
+z1=sqrt(x)
+z2=log(y)
+```
+For a complete list of functions in base R, when you have a chance (on your own time) type library(help = "base") in your console. This will pull up a documentation window and will show which functions are built within R.
+
+You can get help on any R function by entering ?_functionname_ or help(_functionname_). For example:
+```{r}
+?sqrt
+help(log)
+```
+
+You can also remove variables by suing the function rm(). For example, if we wanted to delete the variable "x" from our environment, we would type:
+```{r}
+rm(x)
+```
+You will see that "x" no longer appears in your environment, and if you type "x" an error message will appear: "Error: object 'x' not found".
+```{r}
+x
+```
+
+Feel free to play around a bit with all you have learnt so far when you have a chance. 
+
+# Creating a script
+
+So far, we have done everything on the Console window. However, another way to give instructions to R is by creating scripts. A script contains stored instructions for R. You can tell R to read this file, and to carry out the instructions that it contains. It is also the best way to store everything you do in R so you can repeat it in the future. 
+To create a script go to the top left corner of your screen, click on "File", then click on "New File" and then click on "New Script". 
+You will see a script file opens up in the top left part of RStudio, pushing your Console window to the bottom left. 
+
+You can now type everything you have done so far in the Console window in the script file- that way you ensure you can reproduce everything in the future. In the scrpt file type:
+```{r}
+getwd()
+x=2+2
+x
+x<-2+2
+print(x)
+class(x)
+x1="a"
+class(x1)
+z=3+5
+y=4*10
+z=y/x
+z1=sqrt(x)
+z2=log(y)
+?sqrt
+help(log)
+rm(x)
+x
+```
+You can select it all and click on the button that says "Run" this will run all the selected sections and show the outputs in your Console window. 
+Save your script to your working directory by clicking on the "Save" icon. Remember to assign a descriptive name to your Script such as "Rintro_file1".
+Remember that these scripts need to be in the working directory, or R won’t see them.
+
+When writing in a computer language, it is often a good idea to write clarifying comments in plain language, to remind yourself why you did what you did, or to make a note for someone who is looking over your R code. To do this, though, you need to use a special character to say to R “Ignore this, this is information for someone else”
+You do this with the "#" character. Try it. Go to the command linein your Console, and type a comment without the #. For example, write "This is a comment" and press Enter:
+```{r}
+This is a comment
+```
+R will give you an error. This is because R thought you were trying to give it instructions, but it didn’t understand what you wanted.
+Now type "# This is a comment" and press Enter:
+```{r}
+#This is a comment
+```
+R ignores you, and gives you a new prompt. 
+Now go ahead and comment your script accordingly. 
+
 
 # Vectors
 

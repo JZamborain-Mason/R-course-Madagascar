@@ -15,9 +15,3 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Overview
-
-So far we have used R (RStudio) to analyse ecological and fisheries data. However, R can be used to analyze all types of data. 
-Many research problems require interdisciplinary solutions, and when studying nature, we must also consider its human dimensions. 
-To finish this R Bootcamp, today we are going to visualise and analyse different sorts of socio-economic data 
-

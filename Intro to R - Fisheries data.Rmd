@@ -33,7 +33,7 @@ We are going to work with a dataset that contains post-harvest data for 5 villag
 1) Read explore the data ("CPUE_data_Rcourse.csv"). How many variables does the dataset have? What information it contains? 
 ```{r}
 library(tidyverse)
-dta <- read_csv("CPUE_data_Rcourse.csv")
+dta <- read_csv("data/CPUE_data_Rcourse.csv")
 head(dta)
 names(dta)
 str(dta)

@@ -41,9 +41,9 @@ library(WDI)
 dat = WDI(country = "all", indicator = c("malnut" = "5.51.01.02.malnut"), start=2005, end=2011, extra=TRUE, cache=NULL)
 
 #Now lets inspect the data
-names(df)
-head(df)
-str(df)
+names(dat)
+head(dat)
+str(dat)
 
 #As we can see, this is a data frame containing 1078 observations and 11 variables, where "malnut" is the main variable that we are interested in.
 ```
@@ -247,9 +247,82 @@ dat %>%
   arrange(mean_malnut)
 ```
 
+## Plotting with **`ggplot2`**
+
+**`ggplot2`** is a plotting package that makes it simple to produce high quality figures from data frames. To use **`ggplot2`**, you will need the data frame in the "long" format. 
+
+Lets start by doing a simple plot of the average child malnutrition estimates for Sub-Saharan Africa countries (from the last exercise)
+
+To build a ggplot, we need to:
+
+- use the `ggplot()` function and specify the data frame using the `data` argument
+- add `geoms` -- graphical representation of the data in the plot (points,
+      lines, bars). Examples include:
+      * `geom_point()` for scatter plots, dot plots, etc.
+      * `geom_bar()` for bar charts
+      * `geom_line()` for trend lines, time-series, etc.  
+      * `geom_boxplot()` for boxplot charts
+
+To add a geom to the plot use `+` operator and assign x and y aesthetics (`aes`)
 
 
 
+```{r}
+#fist, lets create a dataframe with the data we want to plot. Lets call it dat_SSA
+dat_SSA = dat %>%
+  filter(region == "Sub-Saharan Africa") %>% 
+  mutate(perc_malnut = 100*malnut) %>% 
+  group_by(year) %>% 
+  summarise(mean_malnut = mean(perc_malnut, na.rm = T)) %>% 
+  arrange(mean_malnut)
+
+#Now lets do a simple scater plot of the data
+ggplot(data = dat_SSA) +
+  geom_point(aes(x = year, y = mean_malnut))
+```
+
+We can also plot this as a line
+
+```{r}
+#fist, lets create a dataframe with the data we want to plot. Lets call it dat_SSA
+dat_SSA = dat %>%
+  filter(region == "Sub-Saharan Africa") %>% 
+  mutate(perc_malnut = 100*malnut) %>% 
+  group_by(year) %>% 
+  summarise(mean_malnut = mean(perc_malnut, na.rm = T)) %>% 
+  arrange(mean_malnut)
+
+#Now lets do a simple scater plot of the data
+ggplot(data = dat_SSA) +
+  geom_line(aes(x = year, y = mean_malnut))
+```
+
+Now, lets say we are interested in lookng at trends from specific countries. We could have one line (or set of points for each country). Lets look at Madagascar, Mozambique and Tanzania.
+
+```{r}
+#fist, lets create a dataframe with the data we want to plot. Lets call it dat_SSA
+dat_SSA = dat %>%
+  filter(country %in% c("Madagascar", "Mozambique", "Tanzania")) %>% 
+  mutate(perc_malnut = 100*malnut)
+
+#Now lets do a simple scater plot of the data
+ggplot(data = dat_SSA) +
+  geom_line(aes(x = year, y = malnut, color = country))
+```
+
+Because the lines are overlapping, we can also plot each country in a seperate figure, using the *`facet_wrap`* function:
+
+```{r}
+#fist, lets create a dataframe with the data we want to plot. Lets call it dat_SSA
+dat_SSA = dat %>%
+  filter(country %in% c("Madagascar", "Mozambique", "Tanzania")) %>% 
+  mutate(perc_malnut = 100*malnut)
+
+#Now lets do a simple scater plot of the data
+ggplot(data = dat_SSA) +
+  geom_line(aes(x = year, y = malnut))+
+  facet_wrap(~ country)
+```
 #Exercise 3
 
 Write a function for the MPA model we constructed in exercise 2. For this model, our parameters will be $t$, $K$, $d$, $L$, $g$, $f$ and $MPA$. The parameter $MPA$ will be a value representing the percent in MPA of our model (from 0 to 100). Your should transform this MPA value into a vector of fishing mortalities, where patches designated as MPA have a value of $f=0$. Set $d=0.2$; $L=100$; $g=0.5$, $K=100$, $t=50$, and initial population of 50 individuals 

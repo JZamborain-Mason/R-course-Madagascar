@@ -22,7 +22,7 @@ First, we need to intall the tidyverse package, which contains a siut of package
 
 ```{r}
 #Install the package. You can use the function below (install.packages) to install any package. Alternativelly, if you are using R studio, you can go to Tools>Install Packages and just selct the package you which to install
-install.packages(tidyverse)
+#install.packages(tidyverse)
 
 #Next, you need to upload the package to the library to make all functions available to use
 library(tidyverse)
@@ -34,7 +34,7 @@ First, lets download a database that we can work with. We will use a database fr
 
 ```{r}
 #First, lets download the WDI (World development Indicators) package
-install.packages(WDI)
+#install.packages(WDI)
 library(WDI)
 
 #Dowload the data we want. Lets name the database "dat"
@@ -278,10 +278,11 @@ dat_SSA = dat %>%
 
 #Now lets do a simple scater plot of the data
 ggplot(data = dat_SSA) +
-  geom_point(aes(x = year, y = mean_malnut))
+  geom_point(aes(x = year, y = mean_malnut)) +
+  labs(x = "Year", y = "Child Malnutrition")
 ```
 
-We can also plot this as a line
+We can also plot this as a line:
 
 ```{r}
 #fist, lets create a dataframe with the data we want to plot. Lets call it dat_SSA
@@ -323,26 +324,6 @@ ggplot(data = dat_SSA) +
   geom_line(aes(x = year, y = malnut))+
   facet_wrap(~ country)
 ```
-#Exercise 3
 
-Write a function for the MPA model we constructed in exercise 2. For this model, our parameters will be $t$, $K$, $d$, $L$, $g$, $f$ and $MPA$. The parameter $MPA$ will be a value representing the percent in MPA of our model (from 0 to 100). Your should transform this MPA value into a vector of fishing mortalities, where patches designated as MPA have a value of $f=0$. Set $d=0.2$; $L=100$; $g=0.5$, $K=100$, $t=50$, and initial population of 50 individuals 
-
-**a**) Calculate yield and population sizes for all MPA values (0, 1, 2..., 100). Test MPA effectiveness for fishing mortality values for patches open to fishing of $f=0.3$ and $f=0.6$. 
-
-Plot:  
-1) Total population size (all patches) in year t for all MPA sizes and both fishing mortalities  
-2) Total yield (all patches) in year t for all MPA sizes and both fishing mortalities  
-
-Answer:  
-1) Does MPA improve system-wide fishing yield?
-2) What is the optimal MPA size for both fishing mortalities?  
-2) How does the answer from 2) change if $d=0.5$?
-
-**b**) Calculate the optimal MPA size for different mobility values. Set $f=0.6$ for all patches open to fisheries and test a range of $d$ values (0, 0.1, 0.2...., 1) and MPA sizes (0, 1, 2..., 100). Optimal MPA size is defined as the percent in MPA that gives the maximum yield in year t. 
-
-Plot:  
-1) optimal MPA size for different values of d
-
-**c**) Now lets test for a different MPA location. Instead of the MPA be located on the edge of the string of patches (in the case of exercise 2 the patches on the right), lets set the MPA in the middle. Make the same plot of **b**.
 
 

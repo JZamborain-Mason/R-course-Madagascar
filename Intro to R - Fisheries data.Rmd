@@ -1,5 +1,5 @@
 ---
-title: "Intro to R modeling - Session 2"
+title: "Intro to R modeling - Fisheries data"
 author: "Daniel Viana"
 date: "February 1, 2018"
 output:
@@ -30,6 +30,8 @@ We are going to work with a dataset that contains post-harvest data for 5 villag
 7) for each village, what proportion of total catch is consumed vs sold?
 8) What other interesting analysis can you do with the data? What other interesting questions can you ask? try to do it! 
 
+
+#Answers
 1) Read explore the data ("CPUE_data_Rcourse.csv"). How many variables does the dataset have? What information it contains? 
 ```{r}
 library(tidyverse)
@@ -51,7 +53,7 @@ ggplot(data = dta) +
 
 3) What is the cath per fishing gear in each village?
 ```{r}
-data %>% 
+dta %>% 
   group_by(village) %>% 
   summarise(catch = sum(total_weight)) %>% 
   ggplot() +
@@ -61,7 +63,7 @@ data %>%
 4)
 
 ```{r}
-data %>% 
+dta %>% 
   mutate(gear = as.factor(gear)) %>% 
   group_by(village, gear) %>% 
   summarise(catch = sum(total_weight)) %>% 

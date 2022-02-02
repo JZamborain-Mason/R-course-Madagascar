@@ -325,5 +325,28 @@ ggplot(data = dat_SSA) +
   facet_wrap(~ country)
 ```
 
+## Customizing plots
+
+Take a look at the [**`ggplot2`** cheat sheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf), and think of ways you could improve the plot.
+
+Now, let's change x and y axis labels and add a title to the figure. We can also remove the gray background using `theme`. `ggplot2` has many built in themes, such as `theme_bw()`, but you type `theme_` to see the many `theme` options. We can also use the `theme` 
+
+We can also change the size and color of the line
+
+```{r}
+#fist, lets create a dataframe with the data we want to plot. Lets call it dat_SSA
+dat_SSA = dat %>%
+  filter(country %in% c("Madagascar", "Mozambique", "Tanzania")) %>% 
+  mutate(perc_malnut = 100*malnut)
+
+#Now lets do a simple scater plot of the data
+ggplot(data = dat_SSA) +
+  geom_line(aes(x = year, y = malnut), size = 3, color = "red")+
+  facet_wrap(~ country) +
+  labs(x = "Year", 
+       y = "Child Malnutrition",
+       title = "Prevalence of Child Malnutrition") +
+  theme_bw()
+```
 
 

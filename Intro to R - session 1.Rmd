@@ -23,11 +23,11 @@ This course assumes that you have never done any computer programming before, so
 
 The first two days are introductory courses so you get to know how to work with R and RStudio. At times, you might find this to be frustrating and tedious. We acknowledge inmersing yourselves into computer programming can be a steep learning curve (we have been there...), but believe us when we say it is totally worth it! We are here to help you navigate this process. 
 
-The third day we will introduce you to biodiversity metrics......... (Thomas to fill in?)
+The third day we will introduce you to biodiversity metrics, and with R, we will calculate and compare different metrics. 
 
-The fourth day, using real catch statistics from Madagascar,  we will work on...... (Daniel to fill in)
+The fourth day, using real catch statistics from Madagascar, we will calculate catch statistics and visualize catch data in different ways.
 
-Finally, the last day of the course, we will use real reef fish data (or nutrient supply) and explore how important it is to consider the human dimensions for coral reef management (and explore how important fish is for the nutrient supply of different countries)
+Finally, the last day of the course, we will use real reef fish data and explore how important it is to consider the human dimensions for coral reef management. 
 
 Are you ready? Let's get started!
 

@@ -1,0 +1,381 @@
+---
+title: "Intro to interdisciplinar data analysis"
+author: "Jessica Zamborain Mason"
+date: "27/01/2022"
+output:
+  pdf_document: default
+  html_document:
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+So far we have used R (RStudio) to analyze ecological and fisheries data. However, R is a great tool to analyze all types of data. 
+Many research problems require interdisciplinary solutions, and when studying nature, it is key to also consider nature's human dimensions. 
+To finish this R Bootcamp, today we are going to visualize and analyze socio-economic data. 
+
+First, we are going to use the dataset from Cinner et al. 2020: "Meeting fisheries, ecosystem function, and biodiversity goals in a human dominated world". We are going to explore the relationships between human impact and a key reef ecosystem metric: reef fish biomass. 
+
+We will finish by creating a map to visualize sampled reef sites around the globe.
+
+However, in order for you to keep developing your skills in R and to apply everything you have learned so far, we have also added an extra dataset you can access in your own time related to public health (nutrients). The dataset is from Smith et al. 2016" "Global Expanded Nutrient Supply (GENuS) model: a new method for estimating the global dietary supply of nutrients". You can explore this data further and apply everything you have learned in this bootcamp without us telling you what to do! 
+
+Are you ready for your last day of R bootcamp? Let's do it!
+
+# Human impact on reefs
+
+Open RStudio. Create a new Script and save it. Remember to give it an informative name (e.g., Rintro_social). 
+
+Next, in your script, remove any unwanted items from your environment in order to avoid cluttering. For this course, having objects in your environment that you created on previous days is probably not a problem. However, de-cluttering is a good coding practice to make sure your script is properly following the instructions you gave it and not using past objects.  
+
+```{r}
+#clear R
+rm(list=ls())
+```
+
+
+The Cinner et al. 2020 dataset we will be working with can be found in this link: https://research.jcu.edu.au/data/published/c57c53ca7177bca5a8652120d8d15928/ (you might have it already if it was provided to you)
+Under the "Data" heading, you will find an attachment called "Cinneretal2020_multiplegoals_data.csv". Download this and store it in your working directory. Remember, this is where R is working. If you do not know what your working directory is, tell R to "get it" to make sure you store the data there. 
+
+
+```{r}
+#Get working directory
+getwd()
+```
+
+Alternatively, you could also store the data where you  want (e.g., where you saved the R script) and tell R to set that working directory using the "setwd()" function. In my case:  
+
+```{r}
+#set working directory 
+setwd("C:/Users/jzamb/Dropbox/Harvard Postdoc/Madagascar R course")
+
+```
+
+
+The dataset is a ".csv" file. Upload the data to R using the "read.csv()" function, making sure that when doing this, you create a data frame. We will call this data frame "reef_dat". Remember to comment your script!
+
+```{r}
+# Upload csv data and store it as a dataframe
+reef_dat<- read.csv("Cinneretal2020_multiplegoals_data.csv",header = T)
+```
+
+We created a dataframe. We told R to read the relevant .csv file from our working directory. The "header=T" is just telling R that it is "TRUE" that the file's top row is a "heading" (i.e., the different column names).
+
+Go ahead and inspect the data.
+In order for you to learn the most, try to do everything yourself without looking at the answers. 
+
+```{r}
+
+#Display column names
+colnames(reef_dat)
+#Display subset of data
+head(reef_dat)
+# Display structure of the data
+str(reef_dat)
+#summarize the data
+summary(reef_dat)
+```
+
+**QUESTION**: What format does the data have? (wide or long?)
+
+These data are in wide format, each row is a unique reef site, and each column is a variable associated to that site. 
+It is important that you always inspect your data first.
+We are going to leave it as a wide format for our explorations today. 
+
+
+There is lots of information there. 
+
+Basically, the dataset consists of 1798 reef sites spanned around the globe. For each reef site there is (i) sampling and environmental information like the country or depth of the survey, (ii) socio-economic information like population size or human impact (gravtot5002),  and (iii) four key ecological metrics important for reef ecosystems: biomass of reef fish, biomass of reef fish >20 cm, trait diversity, and parrotfish scraping potential ("Biomass...some.families", "Biomass_above20cm","Trait_diversity" and  "Scraping_potential", respectively). 
+The summary function shows the ranges of the variables that are numeric. 
+
+You will be able to explore the data further in your own time. However,  in order to explore why it is so important to consider the human dimensions of coral reef ecosystems,  today we are going to focus on two variables: 
+
+- **`gravtot5002`**:  This is a measure of human impact for each of our reef sites. It is measured as the population size within a 500-km radius of each reef site divided by the travel time (squared) it takes to reach those sites. In other words, reefs with high populations sizes and accessible from those populations will have higher values. In contrast, reefs that do not have any populations nearby will have low values.
+
+- **`Biomass...some.families`**:  This is the measured reef fish biomass in each of those reef sites in kg/ha. It is restricted to reef families that are resident on the reef diurnally and are well captured by Underwater Visual Count sampling methods. 
+
+Check the distribution of those variables. Maybe histograms will help you visualize them (e.g., geom_histogram() with the ggplot package).
+Note that to do that those you will need to load the tidiverse library.  
+
+```{r}
+#load tidyverse library
+library(tidyverse)
+
+#human impact distribution
+summary(reef_dat$gravtot5002)
+hi_dist<-ggplot(reef_dat,aes(x=gravtot5002))+geom_histogram(fill="darkred",alpha=0.5)+theme_classic()+xlab("Human impact")
+#biomass distribution
+summary(reef_dat$Biomass...some.families)
+bi_dist<-ggplot(reef_dat,aes(x=Biomass...some.families))+geom_histogram(fill="darkred",alpha=0.5)+theme_classic()+xlab("Reef fish biomass (Kg/Ha)")
+hi_dist;bi_dist
+
+```
+
+we see both distributions are quite skewed to the left (e.g., lognormal distributions). 
+For human impact, most sites are from 1 to 78 human impact values (quartiles) and there are a few sites with really high values. 
+The same happens for reef fish biomass. Most sites have between 175 to 837 kg/ha  (quartiles) and there are few sites with really high values. 
+We say these may be log-normal distributions because typically if you log the variable, its distribution becomes normal. Try it with biomass:
+
+```{r}
+#biomass distribution on log-scale
+bi_dist_log<-ggplot(reef_dat,aes(x=log(Biomass...some.families)))+geom_histogram(fill="darkred",alpha=0.5)+theme_classic()+xlab("log(Reef fish biomass (Kg/Ha))")
+bi_dist_log
+```
+
+Transforming your variables - with the correct transformation -  is usually a good option to visualize your data better (and sometimes prepare it for analysis). However, we always have to be mindful with data transformations. For example, what would happen if we tried to log-transform the data and we had biomass values of 0? Try this by (i) getting the log of 0, and (ii) looking at the distribution of log (gravtot5002):
+
+
+```{r}
+#log of 0
+log (0)
+#human impact distribution on log-scale
+summary(log(reef_dat$gravtot5002))
+hi_dist_log<-ggplot(reef_dat,aes(x=log(gravtot5002)))+geom_histogram(fill="darkred",alpha=0.5)+theme_classic()+xlab("log(Reef fish biomass (Kg/Ha))")
+hi_dist_log
+
+```
+
+If we log-transform data that has zeros, those will become -Inf values.
+R will delete those values for plotting purposes. However, deleting zeros is not always smart (those zeros might be very important for understanding our system and answering our research question). Therefore, R advised you about this by giving you a warning: "Removed 63 rows containing non-finite values (stat_bin)."
+
+To overcome these data deletion problems we can use other transformations (like sqrt or log+min). Go ahead and look at the distribution of log+min human impact. What log+min does, is get the minimum value of your variable of interest that is above zero, and adds that to each entry of your variable of interest (making the zeroes become the minimum positive values). Once you have transformed those zeros, it applies the log() function.
+
+First, you will have to calculate the min() of gravtot5002, WHERE gravtot5002 is positive. We do this, by restricting our variable to values >0. Then you will have to add that to your gravtot5002 variable and log the result:
+
+```{r}
+
+#lowest positive value of human impact
+min(reef_dat$gravtot5002[reef_dat$gravtot5002>0])
+#log of lowest positive value
+log(min(reef_dat$gravtot5002[reef_dat$gravtot5002>0]))
+#human impact distribution on log+min scale
+summary(log(reef_dat$gravtot5002+min(reef_dat$gravtot5002[reef_dat$gravtot5002>0])))
+hi_dist_logmin<-ggplot(reef_dat,aes(x=log(gravtot5002+min(gravtot5002[gravtot5002>0]))))+geom_histogram(fill="darkred",alpha=0.5)+theme_classic()+xlab("log+min(Human impact)")
+hi_dist_logmin
+
+```
+
+we see that we have now kept those 0 values, which appear in the histogram as the counts stacked near the value of -15. At the same time, we can see the distribution better. 
+
+
+Ok, now let's look at the relationship between reef fish biomass and human impact with a scatterplot. Try to do it yourself! 
+
+```{r}
+#human impact vs biomass
+ggplot(reef_dat,aes(x=gravtot5002,y=Biomass...some.families))+geom_point(fill="darkred",pch=21,alpha=0.5)+theme_classic()+xlab("Human impact")+ylab("Reef fish biomass (Kg/Ha)")
+```
+
+**QUESTION**: Do you think human impact is associated with reef fish biomass?
+
+Yes, we see that reefs only have high biomass values at low human impact. In other words, all high human impact locations have low biomass values. 
+
+
+As both data are left skewed,  it might be worth transforming both axes to aid clarity in our visualization. Go ahead and plot the transformed variables: 
+
+```{r}
+#human impact vs biomass with transformed units
+ggplot(reef_dat,aes(x=log(gravtot5002+min(gravtot5002[gravtot5002>0])),y=log(Biomass...some.families)))+geom_point(fill="darkred",alpha=0.5,pch=21)+theme_classic()+xlab("log+min(Human impact)")+ylab("log(Reef fish biomass (Kg/Ha))")
+```
+
+Transforming the data has allowed us to see the patterns better. We see that there is lots of noise and this is because there are a lot of factors that we have not accounted for that are different among reef sites (e.g., depth, habitat types...). However, on average, biomass stays fairly constant at low human impact values (<0 in transformed units), and as human impact increases, the biomass tends to decrease.  [in your own time, inspect biomass values by reef habitat or depth category!]
+
+The take-home messages of these exercises are that: (i) there are patterns between important ecosystem metrics and human metrics, and thus taking an interdisciplinar approach, that considers human dimensions, will help us understand and find the best pathways to manage reef ecosystems; and (ii) R is a useful tool to analyze all types of data. 
+
+
+Let's end these exercises by creating a map and plotting the sites. This will help us understand the spatial extent of our reef sites. To do this we will use the libraries "rworldmap" and "ggplot2" (which is already within the tidyverse package). Install the "rworldmap" package and load the library to your script.
+
+```{r,}
+#Install package
+#install.packages("rworldmap") #uncomment if you have not installed it yet
+#load libraries
+library(rworldmap)
+
+```
+
+We will use the "getMap()" function to load a map with high resolution (we will call this object "newmap"), and tell R to return you the object class:
+
+```{r}
+#get Map
+newmap <- getMap(resolution = "high")
+#class of object
+class(newmap)
+
+```
+
+You will see that a new object called "newmap" has appeared in your environment, and it is a Spatial Polygon Dataframe. This is basically a big data frame composed of polygons defined by a set of coordinates (e.g., latitude and longitude values).
+
+We can plot this using the basic "plot()" function.  However, as you have already learned, a more user-friendly way to modify plots as we want them is using the ggplot2 package. Check out the basic plot() function first:
+
+```{r}
+#plot Map
+plot(newmap)
+
+```
+
+
+Now plot the map in ggplot. You will use the "geom_polygon()" function, use "long" as your x variable, "lat" as your y variable, and "group" as a grouping variable that indicates which coordinates to group together (country). 
+
+You can play around with ggplot's functions to make the plot how you want it. 
+For example, you can use the "fill" command to colour by country (i.e., group), you can add labels to your axes, you an change the theme to add white (e.g., classic) background, you can also make colours slightly transparent (with the "alpha" value):
+
+
+
+```{r}
+#plot map with ggplot
+ggplot()+geom_polygon(data = newmap, aes(x=long, y = lat, group = group,fill = group), color = "grey", alpha=0.7)+guides(fill=F)+theme_classic()+xlab("Longitude")+ylab("Latitude")+scale_fill_viridis_d()
+
+```
+
+
+You can also create more simple maps. For example, create a simple grey map with a white classic background and axes labels.  Assign the plot to an object called "map_reefsites": 
+
+```{r}
+#create a grey map object
+map_reefsites<-ggplot()+geom_polygon(data = newmap, aes(x=long, y = lat, group = group), fill = "grey",color = "grey", alpha=0.7)+theme_classic()+xlab("Longitude")+ylab("Latitude")
+#view map
+map_reefsites
+
+```
+
+
+Now let's plot the reef sites on top. We do this by adding information to the already created map. Use the "Site_lat" and "Site_Long" variables.
+
+```{r}
+# map sites
+map_reefsites+  geom_point(data=reef_dat,aes(x=Site_Long, y=Site_Lat),fill="blue",pch=21,alpha=0.5)
+
+```
+
+
+Note that I plotted the sites, and filled them with "blue" colour. The "pch" variable specifies which type of symbol we want. "21" is a point symbol with filling. 
+In your own time, if you want to search for additional symbols look at the documentation that arises when you put ?pch. This will have a range of commands to visualize your symbols in different ways. At the bottom, under "'pch' values", you will be able to see different symbol specifications.
+
+Go ahead and explore different plotting options. For example, you could "fill" your sites by the reef fish biomass they have:
+
+```{r}
+
+map_reefsites+  geom_point(data=reef_dat,aes(x=Site_Long, y=Site_Lat,fill=log(Biomass...some.families)),pch=21,size=3)+scale_fill_gradientn (name="log-Biomass (Kg/ha)",colours = c("darkred","white","navyblue"))
+```
+
+
+Well done! Now we have a sense of where the 1798 sites are. You created a map with R and plotted the data in several ways!
+
+
+
+# Optional: Nutrient supply
+
+We have finished the practical, and you are welcome to stop here. However, if you want to keep exploring (now or later) and apply everything you have learned, here you have an extra dataset to explore. 
+
+The Smith et al. 2016 dataset can be accessed through a package created by Christopher Free called "GENuS". This data is available through Github. To access it, we have to have the "devtools" package installed. Go ahead and download that package. Then, use the "install_github("cfree14/GENuS", force=T)" command to download the GENuS database, and load the library:
+
+```{r}
+# Install devtools 
+#install.packages("devtools") #uncomment if you have not installed it yet
+
+# Install GENus database and load library
+#devtools::install_github("cfree14/GENuS", force=T) #uncomment if you have not installed it yet
+library(GENuS)
+```
+
+GENuS has several datasets:
+
+Food composition tables for GENuS: ?genus_fcts
+Edible food supply by country and year (1961-2011): ?genus_food_cntry
+Edible food supply by country, age, and sex in 2011: ?genus_food_agesex_2011
+Nutrient supply by country and year (1961-2011): ?genus_nutr_cntry
+Nutrient supply by country, age, and sex in 2011: ?genus_nutr_agesex_2011
+Nutrient supply by country and food in 2011: ?genus_nutr_food_2011
+Nutrient supply (incl. fortification) by country in 2011: ?genus_nutr_fort_cntry_2011
+Nutrient supply (incl. fortification) by country, age, and sex in 2011: ?genus_nutr_fort_agesex_2011
+
+
+For example, you can create a dataframe called "nut_dat" that stores the GeNus data "genus_nutr_food_2011": Nutrient supply by country and food type for 2011. 
+
+```{r}
+# dataframe of nutrient supply by country and food
+nut_dat<- genus_nutr_food_2011
+```
+
+Go ahead and inspect the data: 
+
+```{r}
+
+#Display column names
+colnames(nut_dat)
+#Display subset of data
+head(nut_dat)
+# Display structure of the data
+str(nut_dat)
+#summarize the data
+summary(nut_dat)
+```
+
+There is lots of information there. 
+First you may see that there are repeats in the data (i.e., rows that are equal). For the shake of explorations, remove identical rows using the distinct() function from the tidyverse package. Modify the dataframe such that it only keeps unique rows:
+
+
+```{r}
+#keep only distinct rows
+nut_dat2<-nut_dat %>%
+  distinct()
+#inspect data
+head(nut_dat2)
+```
+
+You have different nutrient (e.g., Calories-and their units:kcal/person/day) supplies  of different food types (e.g., Almonds) for different countries (e.g., Afghanistan-and their codes: AFG ): "supply_med" is the median nutrient supply, and "lo" and "hi" are the uncertainity intervals in nutrient supply values. 
+
+
+**QUESTION**: What format does the data have? (wide or long?)
+
+These data are in long format, here each row is a unique observation, and each column is a variable associated to that observation. 
+
+You can see the unique types of foods, countries or food items by using the "unique()" functions. You can also see how many of those there are by using the "length()" function. For example:
+
+```{r}
+# Unique countries
+unique(nut_dat2$country)
+# Length unique countries
+length(unique(nut_dat2$country))
+
+# Unique food items
+unique(nut_dat2$food)
+# Length unique food items
+length(unique(nut_dat2$food))
+
+# Unique nutrients
+unique(nut_dat2$nutrient)
+# Length unique nutrients
+length(unique(nut_dat2$nutrient))
+
+```
+
+Alternatively, if you wanted to create a table with those numbers you could use the "%>%" and "summarise()" functions from tidyverse you learned in the second day of R introduction:
+
+```{r}
+#table of sample sizes for uniqye variables
+tab_n<-nut_dat2 %>%
+  summarise(n_countries=length(unique(country)),
+            n_food_itemas=length(unique(food)),n_nutrients = length(unique(nutrient)))
+
+tab_n
+```
+
+Using the tidyverse functions that you learned (e.g., day 2), go ahead an explore the data further. 
+
+There are many things you can do with R. For example, for any given food type (e.g., filter()), you can explore the relationship between different nutrient supplies (e.g., ggplot()); you can calculate the contribution of certain food types to the overall nutrient supplies (e.g., group_by()); or you can do the same but in percentages (e.g., mutate()). 
+
+
+We will leave you here so you use R for anything your imagination wants. Remember, in R it is all about giving it a go!
+
+Now  you know the basics of how to use this software. You can now use it to explore and analyse any type of data! Congratulations!
+
+Please keep exploring! Together we can increase our knowledge on how to manage reef ecosystems in a way that we conserve them and also help them keep providing the key services they provide to human societies!
+
+

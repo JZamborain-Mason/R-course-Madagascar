@@ -1,19 +1,20 @@
 ---
 title: "Intro to modeling in R - Session 1"
-author: "Daniel Viana and Jessica Zamborain-Mason"
+author: "Jessica Zamborain-Mason and Daniel Viana"
 date: "January 23, 2022"
 output:
-  word_document:
-    toc: yes
   pdf_document: default
   html_document:
     toc: yes
     toc_float: yes
+  word_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 # Bootcamp overview
  
 Welcome to the R bootcamp for "ARMS to reefs: A new tool to restore coral reef biodiversity, fisheries yields, and human health in Madagascar".
@@ -61,13 +62,11 @@ The console window is also where you enter commands (where the arrow is ">") for
 ```{r}
 2+2
 ```
-an press enter, R will return the value of 4. R "heard" you, understood what you wanted when you said “2+2”, carried out the addition, and told you the answer.
 
-Let's move on to RStudio. To do so, first we will close R. We do this by typing:
+and press enter, R will return the value of 4. R "heard" you, understood what you wanted when you said “2+2”, carried out the addition, and told you the answer.
 
-```{r}
-q()
-```
+Let's move on to RStudio. To do so, first we will close R. We do this by typing "q()" and pressing Enter.
+
 When you quit R, it will ask you if you want to save the workspace (that is, all of the variables you have defned in this session); for now (and in general), say "no" in order to avoid clutter.
 
 Similar to how we opened R, now we open RStudio (click the RStudio icon on your desktop or search for RStudio in your aplications). 
@@ -76,43 +75,55 @@ On the left side, you may find something familar. That is right, it is the conso
 However, in contrast to R, in RStudio you have other panels. 
 On the bottom right, you will likely see some files. This is your working directory (where files related to the project are or will be stored).
 To check your working directory, go to the command window and type:
+
 ```{r}
 getwd()
 ```
+
 This tells you what RStudios’s working directory is. Any outputs you generate should appear in this directory.
 
 On the top right you have the environment. This is where you will see the data objects you create. Currently it is empty because we have not created any objects. Let's create one. In the console window, create a variable x that is equal to 2+2 and press Enter: 
+
 ```{r}
 x=2+2
 ```
+
 You will see that now your environment has one object called x that has a value of 4. R has stored this variable in your environment, and knows what x is (the result of 4). So if in your console window you type "x" and press Enter, R returns its value:
+
 ```{r}
 x
 ```
+
 Equivalently, you can use "<-" instead of "=" to assign variables, and you can also use print() to show what your variables are. For example, the two commands above can be replaced by: 
+
 ```{r}
 x<-2+2
 print(x)
 ```
+
 By default, a variable created this way is a vector (in this case of length 1), and it is numeric because we gave R a number. You can see what class of object you have by using the function class():
+
 ```{r}
 class(x)
 ```
+
 This tells you x is a numeric variable. You could instead create a character string. For example:
+
 ```{r}
 x1="a"
 class(x1)
 ```
+
 Now we have a new object called "x1" that has the character "a" stored. 
 
-R can tell if you haven't finished a command and will give you a continuation prompt (+) to let you know you havent finished. For example, type z=3+ and press Enter:
+R can tell if you haven't finished a command and will give you a continuation prompt (+) to let you know you haven't finished. For example, type z=3+ and press Enter:
+
+The prompt "+" appears, detailing that R is missing some information to finish assigning your variable. If you add a 5, for example:
+
 ```{r}
-z=3+
+z=3+5
 ```
-The prompt "+" appears, detailing that R is missing some information to finish assigning your variable. For example:
-```{r}
-5
-```
+
 Now R has understood that it has a variable z which has the value of 8. This usually happens if for example we miss a parenthesis. 
 
 Note that 
@@ -120,32 +131,35 @@ Note that
 - R is case sensitive (x and X are not the same variable).
 - it helps to use descriptive variable names, such as CPUE for catch per unit effort instead of "x" or "y". 
 - Calculations are done with variables as if they were numbers. R uses + for assition, - for substraction, * for multiplication, / for division, and ^ for exponentiation. For example:
+
 ```{r}
 y=4*10
 w=y/x
 ```
 
 R also has many built-in mathematical functions that operate on variables. For example log() calculates the natural logarithm, and sqrt() is used to calculate the square-root:
+
 ```{r}
 z1=sqrt(x)
 z2=log(y)
 ```
+
 For a complete list of functions in base R, when you have a chance (on your own time) type library(help = "base") in your console. This will pull up a documentation window and will show which functions are built within R.
 
 You can get help on any R function by entering ?_functionname_ or help(_functionname_). For example:
+
 ```{r}
 ?sqrt
 help(log)
 ```
 
 You can also remove variables by using the function rm(). For example, if we wanted to delete the variable "x" from our environment, we would type:
+
 ```{r}
 rm(x)
 ```
-You will see that "x" no longer appears in your environment, and if you type "x" an error message will appear: "Error: object 'x' not found".
-```{r}
-x
-```
+
+You will see that "x" no longer appears in your environment, and if you type "x" and press Enter an error message will appear: "Error: object 'x' not found".
 
 Feel free to play around a bit with all you have learnt so far when you have a chance. 
 
@@ -155,7 +169,8 @@ So far, we have done everything on the Console window. However, another way to g
 To create a script go to the top left corner of your screen, click on "File", then click on "New File" and then click on "New Script". 
 You will see a script file opens up in the top left part of RStudio, pushing your Console window to the bottom left. 
 
-You can now type everything you have done so far in the Console window in the script file- that way you ensure you can reproduce everything in the future. In the scrpt file type:
+You can now type everything you have done so far in the Console window in the script file- that way you ensure you can reproduce everything in the future. In the script file type:
+
 ```{r}
 getwd()
 x=2+2
@@ -173,25 +188,27 @@ z2=log(y)
 ?sqrt
 help(log)
 rm(x)
-x
 ```
+
 You can select it all and click on the button that says "Run". This will run all the selected sections and show the outputs in your Console window. 
 Save your script to your working directory by clicking on the "Save" icon. Remember to assign a descriptive name to your Script such as "Rintro_file1".
 Remember that these scripts need to be in the working directory, or R won’t see them.
 
 When writing in a computer language, it is often a good idea to write clarifying comments in plain language, to remind yourself why you did what you did, or to make a note for someone who is looking over your R code. To do this, though, you need to use a special character to say to R “Ignore this, this is information for someone else”
-You do this with the "#" character. Try it. Go to the command line in your Console, and type a comment without the #. For example, write "This is a comment" and press Enter:
-```{r}
-This is a comment
-```
+You do this with the "#" character. Try it. Go to the command line in your Console, and type a comment without the #. For example, write "This is a comment" and press Enter.
+
 R will give you an error. This is because R thought you were trying to give it instructions, but it didn’t understand what you wanted.
+
 Now type "# This is a comment" and press Enter:
+
 ```{r}
 #This is a comment
 ```
+
 R ignores you, and gives you a new prompt. 
 
 Now go ahead and comment your script accordingly. For example:
+
 ```{r}
 # Get working directory
 getwd()
@@ -224,8 +241,7 @@ z2=log(y)
 help(log)
 # Remove the variable x
 rm(x)
-#Show x is no longer in the environment
-x
+
 ```
 
 
@@ -243,11 +259,9 @@ x=c(1,2,3,4,5)
 x=c(1:3, 4, 5)
 x=seq(1, 5, by=1)
 x
-
 #Create a vector of zeros with length 5
 x=rep(0, 5)
 x
-
 #Create an empty vector with length 5
 x=vector(length=5)
 x
@@ -260,19 +274,14 @@ Often it is necessary to extract a specific entry or other part of a vector. Thi
 ```{r}
 #Create a vector  of a sequence from 1 to 5
 x=1:5
-
 #Extract first element of the vector
 x[1]
-
 #Extract fifth element of the vector
 x[5]
-
 #Extract elements 1 to 3 of the vector
 x[1:3]
-
 #Extract elements 1, 3 and 5 of the vector
 x[c(1,3,5)]
-
 #We can also set specific values within a vector. For example, we can set the value for the third element of vector x as 0
 x[3] = 0
 x
@@ -292,21 +301,14 @@ x
 y=6:10
 y
 #Multiply two vectors
-
 z = x*y
 z #This will do the following: 1*6, 2*7....
-
-
 #Divide two vectors
 z = x/y
 z #This will do the following: 1/6, 2/7....
-
-
 #Sum two vectors
 z= x + y
 z #This will do the following: 1+6, 2+7....
-
-
 #When vectors have different sizes, r will repeat values of the smallest vector and the resulting vector will have the same size as the largest vector. For example:
 x=1:5
 w=6:12
@@ -326,11 +328,9 @@ Here is an example
 X=matrix(c(1,2,3,4,5,6),2,3)
 #This takes the values 1 to 6 and reshapes them into a 2 by 3 matrix
 X
-
 #Note that values in the data vector are put into the matrix column-wise, by default. You can change this by using the optional parameter byrow. For example
 X=matrix(c(1,2,3,4,5,6),2,3, byrow=TRUE)
 X
-
 #You can also create a matrix of zeros with 2 rows and 3 columns
 X=matrix(0,nrow = 2, ncol= 3)
 X
@@ -344,23 +344,17 @@ Often it is necessary to extract a specific entry or other part of a matrix. Lik
 #Create a matrix with 2 rows and 3 columns
 X=matrix(c(1,2,3,4,5,6),2,3)
 X
-
 #First column of matrix
 X[,1]
-
 #First row of matrix
 X[1,]
-
 #Second element of the first column
 X[2,1]
-
 #Change value of the second element of the first column 
 X[2,1]=200
 X
-
 #We can name the columns of the matrix (note that we need to use quotation marks)
 colnames(X) = c("a", "b", "c")
-
 #Now we can also address the matrix by the name to extract the second element of column "a"
 X[2, "a"]
 ```
@@ -373,13 +367,10 @@ Vectors of same size can be combined to form matrices. We can use the cbind func
 ```{r}
 #Create a vector of zeros and length 5
 x=rep(0, 5)
-
 #Create a vector of ones and length 5
 y=rep(1, 5)
-
 #Combine by rows
 rbind(x,y)
-
 #Combine by columns
 cbind(x,y)
 ```
@@ -391,11 +382,9 @@ Arrays are similar to matrices but can have more than two dimensions. This can b
 ```{r}
 #Create an array of zeros consisting of two matrices with 10 rows and 3 columns
 x = array(0, dim=c(10, 3, 2))
-
 #we can name the columns (like in matrices)
 colnames(x) = c("a", "b", "c")
 x
-
 #Once we name the columns, we can address each column using the column name
 #For example, we can set the first element of column "a" of the first matrix to one 
 x[1,"a",1] = 1
@@ -415,7 +404,6 @@ x = data.frame(1:3,c("a", "b", "c"))
 #Name the data frame
 names(x) = c("ID","categories")
 x
-
 #We can address data frames using a dollar sign ($)
 x$ID
 ```
@@ -430,11 +418,8 @@ x <- list(name=c("Fred", "Joe"), vector=1:5, matrix=matrix(1,2,3))
 x
 #Extract first element
 x[[1]]
-
 #Extract element "name"
 x["name"]
-
 #We can also use a dollar sign ($) to address lists, in this case to extract the element "name"
 x$name
 ```
-
